@@ -2,7 +2,7 @@
 
 function getComputerChoice() {
     const rand = Math.floor(Math.random() * 3);
-    const names = ["rock", "paper","scissors"];
+    const names = ["rock", "paper", "scissors"];
 
     return names[rand];
 }
@@ -12,7 +12,45 @@ function getHumanChoice() {
     return choice;
 }
 
-  
+function displayFinalScore(humanScore, computerScore) {
+    const buttons = document.querySelector(".button-container");
+    const choices = document.querySelector(".choice-display");
+
+
+    while (buttons.firstChild) {
+        buttons.removeChild(buttons.lastChild);
+    }
+
+    while (choices.firstChild) {
+        choices.removeChild(choices.lastChild);
+    }
+
+    const final_text = document.createElement("h3");
+    const replay_btn = document.createElement("button");
+
+    replay_btn.classList.toggle("replay");
+    replay_btn.textContent = "Play again"
+
+    if (humanScore > computerScore) {
+        final_text.textContent = "You won!";
+    } else if (computerScore > humanScore) {
+        final_text.textContent = "Better luck next time :(";
+    } else {
+        final_text.textContent = "It was a tie!";
+    }
+
+    replay_btn.addEventListener("click", () => {
+        window.location.reload();
+    });
+
+    choices.appendChild(final_text);
+    buttons.appendChild(replay_btn);
+
+
+}
+
+
+
 function playGame() {
     let humanScore = 0;
     let computerScore = 0;
@@ -20,60 +58,78 @@ function playGame() {
     function playRound(humanChoice, computerChoice) {
         console.log("You:", humanChoice);
         console.log("Computer:", computerChoice);
-    
-        let hChoice = humanChoice.toLowerCase();
-        if (hChoice === computerChoice) {
-            console.log("It's a tie!");
+
+        let dictionary = {};
+        dictionary["rock"] = "🥔";
+        dictionary["paper"] = "📜";
+        dictionary["scissors"] = "✂️";
+
+        const text = document.querySelector(".text-display");
+        const h_choice = document.querySelector(".h-choice");
+        const c_choice = document.querySelector(".c-choice");
+
+        h_choice.textContent = dictionary[humanChoice];
+        c_choice.textContent = dictionary[computerChoice];
+
+        if (humanChoice === computerChoice) {
+            text.textContent = "It's a tie!";
             return;
         }
-    
-        if (hChoice === "rock") {
+
+        if (humanChoice === "rock") {
             if (computerChoice === "paper") {
-                console.log("You lose! Paper beats Rock.");
+                text.textContent = "You lose! Paper beats Rock.";
                 computerScore++;
-    
-            } else { //scissors
-                console.log("You win! Rock beats Scissors.");
+
+            } else {
+                text.textContent = "You win! Rock beats Scissors.";
                 humanScore++;
             }
-    
-        } else if (hChoice === "paper") {
+
+        } else if (humanChoice === "paper") {
             if (computerChoice === "rock") {
-                console.log("You win! Paper beats Rock.");
+                text.textContent = "You win! Paper beats Rock.";
                 humanScore++;
-    
-            } else { //scissors
-                console.log("You lose! Scissors beats Paper.");
+
+            } else {
+                text.textContent = "You lose! Scissors beats Paper.";
                 computerScore++;
             }
-        
-        } else { //scissors
+
+        } else {
             if (computerChoice === "paper") {
-                console.log("You win! Scissors beats Paper.");
+                text.textContent = "You win! Scissors beats Paper.";
                 humanScore++;
-    
-            } else { //rock
-                console.log("You lose! Rock beats Scissors.");
+
+            } else {
+                text.textContent = "You lose! Rock beats Scissors.";
                 computerScore++;
             }
         }
     }
 
-    for (let i = 0; i < 5; i++){
-        let hc = getHumanChoice();
+    const buttons = document.querySelector(".button-container");
+    const h_score = document.querySelector(".h-score");
+    const c_score = document.querySelector(".c-score");
+
+
+
+    buttons.addEventListener('click', (e) => {
+        let target = e.target;
         let cc = getComputerChoice();
-        playRound(hc,cc);
-    }
+        playRound(String(target.className), cc);
+        h_score.textContent = humanScore;
+        c_score.textContent = computerScore;
 
-    console.log( "Your score:", humanScore, "/5");
+        if (humanScore >= 5 || computerScore >= 5) {
+            displayFinalScore(humanScore, computerScore);
+        }
 
-    if (humanScore > computerScore) {
-        console.log("You won!")
-    } else if (computerScore > humanScore) {
-        console.log("Better luck next time :(")
-    } else {
-        console.log("It was a tie!")
-    }
+    });
+
+
+
+
 
 }
 
